@@ -11,7 +11,7 @@ public class MovementDTO {
     private Category category;
     private String date;
 
-    // Getters and Setters
+  
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 

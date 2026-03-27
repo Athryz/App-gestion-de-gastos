@@ -16,7 +16,7 @@ import io.jsonwebtoken.security.Keys;
 @Component
 public class JwtUtil {
 
-    private static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60 * 1000; // 5 hours
+    private static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60 * 1000; 
     private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     public String getUsernameFromToken(String token) {

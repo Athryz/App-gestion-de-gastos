@@ -1,7 +1,6 @@
-// --- VARIABLES GLOBALES ---
+
 let calendar;
 
-// --- FUNCIONES DE ALCANCE GLOBAL (Para que FullCalendar las vea) ---
 
 function prepararModal(movimiento, fecha) {
     const modal = document.getElementById('modalMovimiento');
@@ -54,7 +53,7 @@ async function guardarMovimiento(fecha) {
         });
         if (res.ok) { 
             cerrarModal(); 
-            location.reload(); // Recarga simple para refrescar datos
+            location.reload(); 
         }
     } catch (e) { console.error(e); }
 }
@@ -100,7 +99,7 @@ window.toggleNotificaciones = (e) => {
     document.getElementById('notif-dropdown').classList.toggle('hidden');
 };
 
-// --- LÓGICA DE INICIO Y DOM ---
+
 
 document.addEventListener('DOMContentLoaded', function () {
     const sectionAuth = document.getElementById('section-auth');
@@ -185,7 +184,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const color = m.category === "INCOME" ? "#ff8fa3" : "#fb6f92";
                 calendar.addEvent({
                     id: m.id, 
-                    title: `${m.description} ($${m.amount})`, 
+                    title: `${m.description} (${m.amount} €)`,
                     start: m.date,
                     backgroundColor: color, 
                     borderColor: 'white',
@@ -195,12 +194,12 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             const el = document.getElementById('saldo');
-            el.innerText = `Balance: $${total.toFixed(2)}`;
+            el.innerText = `Balance: ${total.toFixed(2)} €`;
             el.className = 'balance-display ' + (total >= 0 ? 'balance-positive' : 'balance-negative');
         } catch (e) { console.error(e); }
     }
 
-    // --- AUTH LOGIC ---
+
 
     document.getElementById('auth-form').onsubmit = async (e) => {
         e.preventDefault();
@@ -246,7 +245,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    // Cierra el dropdown si haces click fuera
+
     document.addEventListener('click', () => {
         const dropdown = document.getElementById('notif-dropdown');
         if (dropdown) dropdown.classList.add('hidden');
