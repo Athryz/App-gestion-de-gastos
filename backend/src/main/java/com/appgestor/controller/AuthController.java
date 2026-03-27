@@ -7,13 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
-
-@CrossOrigin(origins = {"http://127.0.0.1:5500", "http://localhost:5500"})
+@CrossOrigin(origins = "*")
 public class AuthController {
 
     @Autowired
@@ -21,41 +19,19 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user) {
-      
         if (userRepo.findByEmail(user.getEmail()).isPresent()) {
-            return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body("Error: El correo electrónico ya está registrado.");
+            return ResponseEntity.badRequest().body("El email ya existe");
         }
-
         user.setRole(Role.BASIC); 
-
-        try {
-            User savedUser = userRepo.save(user);
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
-        } catch (Exception e) {
-            return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al crear la cuenta: " + e.getMessage());
-        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(userRepo.save(user));
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User loginData) {
-     
         Optional<User> userOpt = userRepo.findByEmail(loginData.getEmail());
-
-        if (userOpt.isPresent()) {
-            User user = userOpt.get();
-            
-            if (user.getPassword().equals(loginData.getPassword())) {
-           
-                return ResponseEntity.ok(user);
-            }
+        if (userOpt.isPresent() && userOpt.get().getPassword().equals(loginData.getPassword())) {
+            return ResponseEntity.ok(userOpt.get());
         }
-
-        return ResponseEntity
-            .status(HttpStatus.UNAUTHORIZED)
-            .body("Credenciales inválidas. Revisa tu email y contraseña.");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales incorrectas");
     }
 }

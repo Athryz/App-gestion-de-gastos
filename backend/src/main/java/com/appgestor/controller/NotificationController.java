@@ -1,32 +1,28 @@
 package com.appgestor.controller;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.appgestor.models.User;
+import org.springframework.web.bind.annotation.*;
+import com.appgestor.models.Notification;
 import com.appgestor.repository.NotificationRepository;
-import com.appgestor.repository.UserRepository;
 
 @RestController
 @RequestMapping("/api/notificaciones")
+@CrossOrigin(origins = "*")
 public class NotificationController {
 
     @Autowired
     private NotificationRepository repo;
 
-    @Autowired
-    private UserRepository userRepo;
-
-    private User getSignedInUser() {
-        return userRepo.findById(1L).orElseThrow();
+    @GetMapping("/user/{userId}")
+    public List<Notification> list(@PathVariable Long userId) {
+        return repo.findByUserId(userId);
     }
 
-    @GetMapping
-    public List<?> list() {
-        return repo.findByUserId(getSignedInUser().getId());
+    @PutMapping("/read/{id}")
+    public void markAsRead(@PathVariable Long id) {
+        Notification n = repo.findById(id).orElseThrow();
+        n.setRead(true);
+        repo.save(n);
     }
 }

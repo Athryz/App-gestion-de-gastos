@@ -1,60 +1,41 @@
 package com.appgestor.controller;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.appgestor.models.*;
-import com.appgestor.repository.*;
+import com.appgestor.service.MovementService;
 
 @RestController
 @RequestMapping("/api/movements")
-@CrossOrigin(origins = "*")
+
+@CrossOrigin(origins = "http://127.0.0.1:5500", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS})
 public class MovementController {
 
-    @Autowired private MovementRepository movementRepo;
-    @Autowired private UserRepository userRepo;
-    @Autowired private NotificationRepository notificationRepo;
+    @Autowired 
+    private MovementService movementService;
 
-    // LISTAR: Filtra según el rol
+    
     @GetMapping("/user/{userId}")
-    public List<Movement> listByUser(@PathVariable Long userId) {
-        User requester = userRepo.findById(userId).orElseThrow();
-        String role = requester.getRole().toString();
-
-        // ADMIN y SUPERADMIN ven todo
-        if ("ADMIN".equals(role) || "SUPERADMIN".equals(role)) {
-            return movementRepo.findAll();
-        }
-        // Usuario común solo ve lo suyo
-        return movementRepo.findByUserId(userId);
+    public List<Movement> list(@PathVariable Long userId) {
+        return movementService.listByUser(userId);
     }
 
-    // BORRAR: Control de acceso estricto
+    
+    @PostMapping("/{userId}")
+    public ResponseEntity<Movement> create(@RequestBody Movement mov, @PathVariable Long userId) {
+        return ResponseEntity.ok(movementService.create(mov, userId));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Movement> update(@PathVariable Long id, @RequestBody Movement mov, @RequestParam Long requesterId) {
+        return ResponseEntity.ok(movementService.edit(id, mov, requesterId));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id, @RequestParam Long requesterId) {
-        User requester = userRepo.findById(requesterId).orElseThrow();
-        Movement mov = movementRepo.findById(id).orElseThrow();
-        String role = requester.getRole().toString();
-
-        // Lógica de permisos:
-        // 1. Es el dueño del movimiento
-        // 2. Es ADMIN o SUPERADMIN
-        if (mov.getUser().getId().equals(requesterId) || "ADMIN".equals(role) || "SUPERADMIN".equals(role)) {
-            movementRepo.delete(mov);
-            return ResponseEntity.ok().build();
-        }
-
-        return ResponseEntity.status(403).body("No tienes permisos para borrar este registro");
-    }
-
-    @PostMapping
-    public ResponseEntity<Movement> create(@RequestBody Movement mov) {
-        User user = userRepo.findById(mov.getUser().getId()).orElseThrow();
-        mov.setUser(user);
-        if (mov.getDate() == null) mov.setDate(LocalDate.now());
-        return ResponseEntity.ok(movementRepo.save(mov));
+        movementService.delete(id, requesterId);
+        return ResponseEntity.ok().build();
     }
 }

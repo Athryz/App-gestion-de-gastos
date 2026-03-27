@@ -1,84 +1,100 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestor de Gastos Pro</title>
+    <title>Gestor Financiero</title>
     <link rel="stylesheet" href="css/styles.css">
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
 </head>
 <body>
 
-    <h1>Bienvenido, <span id="user-display-name"></span> 
-    <small id="role-badge" style="font-size: 0.5em; padding: 4px; border-radius: 4px; background: #eee;"></small>
-</h1>
-    <div id="section-auth" class="auth-container">
-        <div class="auth-box">
-            <h2 id="auth-title">Iniciar Sesión</h2>
+    <div id="section-auth" class="auth-screen">
+        <div class="login-box">
+            <h2 id="auth-title">Welcome!</h2>
             <form id="auth-form">
                 <div id="name-group" class="input-group hidden">
                     <label>Nombre</label>
-                    <input type="text" id="auth-name" placeholder="Tu nombre">
+                    <input type="text" id="auth-name" placeholder="Your name">
                 </div>
                 <div class="input-group">
                     <label>Email</label>
-                    <input type="email" id="auth-email" required placeholder="correo@ejemplo.com">
+                    <input type="email" id="auth-email" required placeholder="email@example.com">
                 </div>
                 <div class="input-group">
                     <label>Contraseña</label>
                     <input type="password" id="auth-password" required placeholder="••••••••">
                 </div>
-                <button type="submit" id="auth-submit" class="btn-primary">Entrar</button>
+                <button type="submit" id="auth-submit" class="floral-button">Login</button>
             </form>
-            <p class="toggle-text"><span id="auth-toggle">¿No tienes cuenta? Regístrate aquí</span></p>
+            <p class="toggle-text">
+                <span id="auth-toggle">Aún no tienes cuenta? Regístrate aquí</span>
+            </p>
         </div>
     </div>
 
     <div id="section-app" class="app-container hidden">
-        <header class="app-header">
-            <h1>Bienvenido, <span id="user-display-name"></span></h1>
-            <button onclick="cerrarSesion()" class="btn-danger">Cerrar Sesión</button>
+        <header class="floral-header">
+            <div class="user-info">
+                <h1>Hola, <span id="user-display-name"></span>!</h1>
+                <span id="role-badge" class="role-badge"></span>
+            </div>
+            
+            <div class="header-actions">
+                <div class="notif-block">
+                    <button class="notif-button" onclick="toggleNotificaciones(event)">
+                        Notificaciones <span id="notif-count" class="notif-circle hidden">0</span>
+                    </button>
+                    <div id="notif-dropdown" class="notif-menu hidden">
+                        <div class="notif-title">Últimas Actualizaciones</div>
+                        <ul id="notificaciones-list"></ul>
+                    </div>
+                </div>
+                <button onclick="cerrarSesion()" class="exit-button">Cerrar Sesión</button>
+            </div>
         </header>
         
-        <div id="saldo" class="balance-display">Balance: $0.00</div>
-        <div id='calendar'></div>
-
-        <div class="notifications-section">
-            <h3>Notificaciones</h3>
-            <ul id="notificaciones"></ul>
-        </div>
+        <main class="main">
+            <div class="card">
+                <div id="saldo" class="balance-display">...</div>
+                <div id="calendar" class="view"></div>
+            </div>
+        </main>
     </div>
 
     <div id="modalMovimiento" class="modal-overlay hidden">
-    <div class="modal-content">
-        <h2 id="modalTitulo" style="margin-bottom: 10px; font-weight: bold;">Agregar Movimiento</h2>
-        <p id="modalFecha" style="color: #666; margin-bottom: 15px;"></p>
+        <div class="modal-window">
+            <div class="modal-header">
+                <h2 id="modalTitulo">Nuevo Registro</h2>
+                <button onclick="cerrarModal()" class="close-x">&times;</button>
+            </div>
+            <p id="modalFechaText" class="selected-date"></p>
 
-        <div class="input-group">
-            <label>Descripción</label>
-            <input type="text" id="desc" placeholder="Ej. Alquiler" class="modal-input">
-        </div>
-        
-        <div class="input-group">
-            <label>Monto ($)</label>
-            <input type="number" id="monto" placeholder="0.00" class="modal-input">
-        </div>
+            <div class="input-group">
+                <label>Descripción</label>
+                <input type="text" id="desc" class="modal-input">
+            </div>
+            
+            <div class="input-group">
+                <label>Cantidad</label>
+                <input type="number" id="monto" class="modal-input">
+            </div>
 
-        <div class="input-group">
-            <label>Tipo</label>
-            <select id="tipo" class="modal-select">
-                <option value="INCOME">Ingreso (Verde)</option>
-                <option value="EXPENSE">Gasto (Rojo)</option>
-            </select>
-        </div>
+            <div class="input-group">
+                <label>Tipo</label>
+                <select id="tipo" class="modal-select">
+                    <option value="INCOME">Ingreso</option>
+                    <option value="EXPENSE">Gasto</option>
+                </select>
+            </div>
 
-        <div class="modal-actions" style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
-            <button id="btnGuardar" class="btn-primary">Guardar</button>
-            <button id="btnBorrar" class="btn-danger hidden">Eliminar Movimiento</button>
-            <button onclick="cerrarModal()" class="btn-cancel">Cancelar</button>
+            <div class="modal-actions">
+                <button id="btnGuardar" class="floral-button">Guardar</button>
+                <button id="btnBorrar" class="floral-button hidden" style="background:#fb6f92">Borrar</button>
+                <button type="button" onclick="cerrarModal()" class="exit-button" style="width:100%">Cancelar</button>
+            </div>
         </div>
     </div>
-</div>
 
     <script src="js/script.js"></script>
 </body>
