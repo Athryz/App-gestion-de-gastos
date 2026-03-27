@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Gastos Pro</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
+</head>
+<body>
+
+    <h1>Bienvenido, <span id="user-display-name"></span> 
+    <small id="role-badge" style="font-size: 0.5em; padding: 4px; border-radius: 4px; background: #eee;"></small>
+</h1>
+    <div id="section-auth" class="auth-container">
+        <div class="auth-box">
+            <h2 id="auth-title">Iniciar Sesión</h2>
+            <form id="auth-form">
+                <div id="name-group" class="input-group hidden">
+                    <label>Nombre</label>
+                    <input type="text" id="auth-name" placeholder="Tu nombre">
+                </div>
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" id="auth-email" required placeholder="correo@ejemplo.com">
+                </div>
+                <div class="input-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="auth-password" required placeholder="••••••••">
+                </div>
+                <button type="submit" id="auth-submit" class="btn-primary">Entrar</button>
+            </form>
+            <p class="toggle-text"><span id="auth-toggle">¿No tienes cuenta? Regístrate aquí</span></p>
+        </div>
+    </div>
+
+    <div id="section-app" class="app-container hidden">
+        <header class="app-header">
+            <h1>Bienvenido, <span id="user-display-name"></span></h1>
+            <button onclick="cerrarSesion()" class="btn-danger">Cerrar Sesión</button>
+        </header>
+        
+        <div id="saldo" class="balance-display">Balance: $0.00</div>
+        <div id='calendar'></div>
+
+        <div class="notifications-section">
+            <h3>Notificaciones</h3>
+            <ul id="notificaciones"></ul>
+        </div>
+    </div>
+
+    <div id="modalMovimiento" class="modal-overlay hidden">
+    <div class="modal-content">
+        <h2 id="modalTitulo" style="margin-bottom: 10px; font-weight: bold;">Agregar Movimiento</h2>
+        <p id="modalFecha" style="color: #666; margin-bottom: 15px;"></p>
+
+        <div class="input-group">
+            <label>Descripción</label>
+            <input type="text" id="desc" placeholder="Ej. Alquiler" class="modal-input">
+        </div>
+        
+        <div class="input-group">
+            <label>Monto ($)</label>
+            <input type="number" id="monto" placeholder="0.00" class="modal-input">
+        </div>
+
+        <div class="input-group">
+            <label>Tipo</label>
+            <select id="tipo" class="modal-select">
+                <option value="INCOME">Ingreso (Verde)</option>
+                <option value="EXPENSE">Gasto (Rojo)</option>
+            </select>
+        </div>
+
+        <div class="modal-actions" style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
+            <button id="btnGuardar" class="btn-primary">Guardar</button>
+            <button id="btnBorrar" class="btn-danger hidden">Eliminar Movimiento</button>
+            <button onclick="cerrarModal()" class="btn-cancel">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
