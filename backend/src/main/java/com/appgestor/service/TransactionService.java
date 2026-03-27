@@ -26,7 +26,6 @@ public class TransactionService {
         User source = userRepo.findById(sourceId).orElseThrow();
         User target = userRepo.findById(targetId).orElseThrow();
 
-        // Gasto para el origen
         Movement expense = new Movement();
         expense.setUser(source);
         expense.setCategory(Category.EXPENSE);
@@ -34,7 +33,7 @@ public class TransactionService {
         expense.setDescription("Transferencia enviada a " + target.getName());
         expense.setDate(LocalDate.now());
 
-        // Ingreso para el destino
+   
         Movement income = new Movement();
         income.setUser(target);
         income.setCategory(Category.INCOME);
@@ -45,7 +44,7 @@ public class TransactionService {
         movementRepo.save(expense);
         movementRepo.save(income);
 
-        // Notificar al destino
+    
         Notification n = new Notification();
         n.setUser(target);
         n.setMessage("Has recibido una transferencia de " + amount + "€ de " + source.getName());

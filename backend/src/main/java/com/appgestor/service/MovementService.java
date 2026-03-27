@@ -33,7 +33,7 @@ public class MovementService {
         if (user.getRole() == Role.BASIC) {
             return movementRepo.findByUserId(userId);
         }
-        // Admin y SuperAdmin ven todo
+    
         return movementRepo.findAll();
     }
 
@@ -50,14 +50,14 @@ public class MovementService {
         User requester = userRepo.findById(requesterId).orElseThrow();
         Movement mov = movementRepo.findById(id).orElseThrow();
 
-        // Solo Admin o SuperAdmin pueden borrar
+    
         if (requester.getRole() == Role.BASIC) {
             throw new RuntimeException("No autorizado para borrar");
         }
 
         movementRepo.delete(mov);
 
-        // Crear notificación para el dueño del movimiento
+  
         createNotification(mov.getUser(), "Un administrador ha eliminado tu movimiento: " + mov.getDescription());
     }
 
@@ -66,7 +66,7 @@ public class MovementService {
         User requester = userRepo.findById(requesterId).orElseThrow();
         Movement mov = movementRepo.findById(id).orElseThrow();
 
-        // Solo Admin o SuperAdmin pueden editar
+       
         if (requester.getRole() == Role.BASIC) {
             throw new RuntimeException("No autorizado para editar");
         }
@@ -74,7 +74,7 @@ public class MovementService {
         mov.setDescription(nuevo.getDescription());
         mov.setAmount(nuevo.getAmount());
         mov.setCategory(nuevo.getCategory());
-        // La fecha NO se modifica según requerimientos
+       
 
         Movement actualizado = movementRepo.save(mov);
         createNotification(mov.getUser(), "Un administrador ha modificado tu movimiento: " + mov.getDescription());
